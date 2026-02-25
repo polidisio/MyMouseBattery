@@ -1,4 +1,4 @@
-# MagicMouseBattery
+# MyMouseBattery
 
 Menu bar app para monitorear la batería del Magic Mouse y Magic Keyboard en macOS.
 
@@ -18,12 +18,12 @@ Menu bar app para monitorear la batería del Magic Mouse y Magic Keyboard en mac
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/tu-usuario/MagicMouseBattery.git
+   git clone https://github.com/polidisio/MyMouseBattery.git
    ```
 
 2. Abre el proyecto en Xcode:
    ```bash
-   open MagicMouseBattery/MagicMouseBattery.xcodeproj
+   open MyMouseBattery/MyMouseBattery.xcodeproj
    ```
 
 3. Compila y ejecuta (Cmd + R)

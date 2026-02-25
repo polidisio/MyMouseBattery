@@ -1,0 +1,24 @@
+/* MenuBarView */
+"no_devices_detected" = "No devices detected";
+"settings" = "Settings...";
+"quit" = "Quit";
+
+/* SettingsView */
+"settings_title" = "Settings";
+"launch_at_login" = "Launch at login";
+"launch_at_login_description" = "The app will open automatically when you log in";
+"low_battery_notification" = "Low battery notification";
+"notification_threshold_description" = "You will be notified when battery drops below %d%%";
+"reset_notifications" = "Reset notifications";
+"reset_notifications_description" = "Force reset notifications for all devices";
+"close" = "Close";
+
+/* DeviceBatteryView */
+"not_detected" = "Not detected";
+
+/* NotificationService */
+"low_battery_title" = "Low Battery";
+"low_battery_body" = "%@: %d%% battery remaining";
+
+/* Notification authorization */
+"notifications_disabled_description" = "Enable notifications in System Settings to receive low battery alerts";

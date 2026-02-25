@@ -1,5 +1,8 @@
 import Foundation
 import UserNotifications
+import os
+
+private let logger = Logger(subsystem: "com.jmaudisio.MyMouseBattery", category: "NotificationService")
 
 class NotificationService: ObservableObject {
     @Published var notificationThreshold: Int {
@@ -7,6 +10,8 @@ class NotificationService: ObservableObject {
             UserDefaults.standard.set(notificationThreshold, forKey: "notificationThreshold")
         }
     }
+
+    @Published var isAuthorized: Bool = true
 
     private var notifiedDevices: Set<String> = []
     private var devices: [DeviceBattery] = []
@@ -20,9 +25,12 @@ class NotificationService: ObservableObject {
     }
 
     private func requestAuthorization() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
+            DispatchQueue.main.async {
+                self?.isAuthorized = granted
+            }
             if let error = error {
-                print("Notification authorization error: \(error)")
+                logger.error("Notification authorization error: \(error)")
             }
         }
     }
@@ -46,8 +54,8 @@ class NotificationService: ObservableObject {
 
     private func sendNotification(for device: DeviceBattery) {
         let content = UNMutableNotificationContent()
-        content.title = "Batería Baja"
-        content.body = "\(device.displayName): \(device.batteryPercentage)% de batería restante"
+        content.title = NSLocalizedString("low_battery_title", comment: "Low battery notification title")
+        content.body = String(format: NSLocalizedString("low_battery_body", comment: "Low battery notification body"), device.displayName, device.batteryPercentage)
         content.sound = .default
 
         let request = UNNotificationRequest(
@@ -58,7 +66,7 @@ class NotificationService: ObservableObject {
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Failed to send notification: \(error)")
+                logger.error("Failed to send notification: \(error)")
             }
         }
     }

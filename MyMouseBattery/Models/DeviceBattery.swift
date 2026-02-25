@@ -24,17 +24,6 @@ struct DeviceBattery: Identifiable, Equatable {
         batteryLevel ?? 0
     }
 
-    var batteryColor: String {
-        let level = batteryPercentage
-        if level >= 50 {
-            return "green"
-        } else if level >= 20 {
-            return "yellow"
-        } else {
-            return "red"
-        }
-    }
-
     var iconName: String {
         switch deviceType {
         case .mouse:

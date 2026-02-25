@@ -5,15 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Magic Mouse Battery</string>
+	<string>My Mouse Battery</string>
 	<key>CFBundleExecutable</key>
-	<string>MagicMouseBattery</string>
+	<string>MyMouseBattery</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.magicmousebattery.app</string>
+	<string>com.jmaudisio.MyMouseBattery</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>MagicMouseBattery</string>
+	<string>MyMouseBattery</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -24,8 +24,12 @@
 	<string>12.0</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright &#xA9; 2026 JM Audisio. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>

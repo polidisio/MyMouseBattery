@@ -1,0 +1,24 @@
+/* MenuBarView */
+"no_devices_detected" = "No se detectaron dispositivos";
+"settings" = "Configuración...";
+"quit" = "Salir";
+
+/* SettingsView */
+"settings_title" = "Configuración";
+"launch_at_login" = "Iniciar al arrancar el sistema";
+"launch_at_login_description" = "La aplicación se abrirá automáticamente al iniciar sesión";
+"low_battery_notification" = "Notificación de batería baja";
+"notification_threshold_description" = "Se notificará cuando la batería baje del %d%%";
+"reset_notifications" = "Reiniciar notificaciones";
+"reset_notifications_description" = "Fuerza el reinicio de las notificaciones para todos los dispositivos";
+"close" = "Cerrar";
+
+/* DeviceBatteryView */
+"not_detected" = "No detectado";
+
+/* NotificationService */
+"low_battery_title" = "Batería Baja";
+"low_battery_body" = "%@: %d%% de batería restante";
+
+/* Notification authorization */
+"notifications_disabled_description" = "Activa las notificaciones en Preferencias del Sistema para recibir alertas de batería baja";

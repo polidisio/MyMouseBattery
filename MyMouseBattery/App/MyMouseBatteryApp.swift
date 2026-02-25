@@ -1,13 +1,12 @@
 import SwiftUI
 import AppKit
-import Combine
+import os
 
-// PR de prueba para issue #3 - Sistema de automatización funcionando correctamente
+private let logger = Logger(subsystem: "com.jmaudisio.MyMouseBattery", category: "App")
 
 @main
-struct MagicMouseBatteryApp: App {
+struct MyMouseBatteryApp: App {
     @StateObject private var batteryService = BatteryService.shared
-    @StateObject private var notificationService = NotificationService()
 
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
@@ -39,6 +38,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         batteryService.onDevicesUpdated = { [weak self] in
             DispatchQueue.main.async {
                 self?.updateStatusItemImage()
+                if let self = self {
+                    self.notificationService.checkBatteryLevels(for: self.batteryService.devices)
+                }
             }
         }
     }
@@ -58,27 +60,36 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
         let lowestLevel = batteryService.devices.compactMap { $0.batteryLevel }.min() ?? 100
 
-        if let image = NSImage(named: "battery") {
-            let resizedImage = NSImage(size: NSSize(width: 18, height: 18))
-            resizedImage.lockFocus()
-            image.draw(in: NSRect(origin: .zero, size: resizedImage.size),
-                      from: NSRect(origin: .zero, size: image.size),
-                      operation: .sourceOver,
-                      fraction: 1.0)
-            resizedImage.unlockFocus()
-            button.image = resizedImage
+        let symbolName: String
+        if lowestLevel > 75 {
+            symbolName = "battery.100"
+        } else if lowestLevel > 50 {
+            symbolName = "battery.75"
+        } else if lowestLevel > 25 {
+            symbolName = "battery.50"
+        } else if lowestLevel > 10 {
+            symbolName = "battery.25"
+        } else {
+            symbolName = "battery.0"
+        }
+
+        let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
+        if let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "Battery level") {
+            button.image = image.withSymbolConfiguration(config)
         }
 
         if lowestLevel < 100 {
             button.attributedTitle = attributedTitle(for: lowestLevel)
+        } else {
+            button.title = ""
         }
     }
 
     private func attributedTitle(for level: Int) -> NSAttributedString {
         let color: NSColor
-        if level < 10 {
+        if level < 15 {
             color = .systemRed
-        } else if level < 20 {
+        } else if level < 30 {
             color = .systemYellow
         } else {
             color = .labelColor
@@ -112,7 +123,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         } else {
             if let button = statusItem.button {
                 batteryService.refresh()
-                NSApp.activate(ignoringOtherApps: true)
+                if #available(macOS 14.0, *) {
+                    NSApp.activate()
+                } else {
+                    NSApp.activate(ignoringOtherApps: true)
+                }
                 popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             }
         }

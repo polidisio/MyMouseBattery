@@ -10,7 +10,7 @@ struct MenuBarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if batteryService.devices.isEmpty {
-                Text("No se detectaron dispositivos")
+                Text(NSLocalizedString("no_devices_detected", comment: "Message when no Bluetooth devices found"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .padding(.vertical, 8)
@@ -36,7 +36,7 @@ struct MenuBarView: View {
             }) {
                 HStack {
                     Image(systemName: "gearshape")
-                    Text("Configuración...")
+                    Text(NSLocalizedString("settings", comment: "Settings button"))
                 }
             }
             .buttonStyle(.borderless)
@@ -52,7 +52,7 @@ struct MenuBarView: View {
             }) {
                 HStack {
                     Image(systemName: "power")
-                    Text("Salir")
+                    Text(NSLocalizedString("quit", comment: "Quit button"))
                 }
             }
             .buttonStyle(.borderless)

@@ -2,6 +2,9 @@ import Foundation
 import IOKit
 import Combine
 import ServiceManagement
+import os
+
+private let logger = Logger(subsystem: "com.jmaudisio.MyMouseBattery", category: "BatteryService")
 
 class BatteryService: ObservableObject {
     static let shared = BatteryService()
@@ -48,6 +51,7 @@ class BatteryService: ObservableObject {
         let result = IOServiceGetMatchingServices(kIOMainPortDefault, matchingDict, &iterator)
 
         guard result == KERN_SUCCESS else {
+            logger.warning("IOKit: Failed to get matching services (result: \(result))")
             return devices
         }
 
@@ -62,7 +66,7 @@ class BatteryService: ObservableObject {
 
                 let deviceType = determineDeviceType(from: productName)
                 let device = DeviceBattery(
-                    id: UUID().uuidString,
+                    id: productName.lowercased().replacingOccurrences(of: " ", with: "-"),
                     name: productName,
                     batteryLevel: batteryPercent,
                     deviceType: deviceType
@@ -155,7 +159,7 @@ class LaunchAtLoginService: ObservableObject {
                     try SMAppService.mainApp.unregister()
                 }
             } catch {
-                print("Error updating launch at login: \(error)")
+                logger.error("Error updating launch at login: \(error)")
             }
         }
     }

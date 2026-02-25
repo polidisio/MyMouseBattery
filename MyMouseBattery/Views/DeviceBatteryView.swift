@@ -23,7 +23,7 @@ struct DeviceBatteryView: View {
                             .foregroundColor(.secondary)
                     }
                 } else {
-                    Text("No detectado")
+                    Text(NSLocalizedString("not_detected", comment: "Battery level not detected"))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }

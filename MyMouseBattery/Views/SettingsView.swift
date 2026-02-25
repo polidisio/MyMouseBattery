@@ -8,7 +8,7 @@ struct SettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("Configuración")
+                Text(NSLocalizedString("settings_title", comment: "Settings title"))
                     .font(.headline)
                 
                 Spacer()
@@ -23,9 +23,9 @@ struct SettingsView: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Toggle("Iniciar al arrancar el sistema", isOn: $launchAtLoginService.isEnabled)
+                Toggle(NSLocalizedString("launch_at_login", comment: "Launch at login toggle"), isOn: $launchAtLoginService.isEnabled)
 
-                Text("La aplicación se abrirá automáticamente al iniciar sesión")
+                Text(NSLocalizedString("launch_at_login_description", comment: "Launch at login description"))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -33,9 +33,21 @@ struct SettingsView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Notificación de batería baja")
+                Text(NSLocalizedString("low_battery_notification", comment: "Low battery notification section title"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+
+                if !notificationService.isAuthorized {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.yellow)
+                        Text(NSLocalizedString("notifications_disabled_description", comment: "Notifications disabled warning"))
+                            .font(.caption)
+                    }
+                    .padding(8)
+                    .background(Color.yellow.opacity(0.1))
+                    .cornerRadius(8)
+                }
 
                 HStack {
                     Slider(
@@ -52,7 +64,7 @@ struct SettingsView: View {
                         .frame(width: 40)
                 }
 
-                Text("Se notificará cuando la batería baje del \(notificationService.notificationThreshold)%")
+                Text(String(format: NSLocalizedString("notification_threshold_description", comment: "Notification threshold description"), notificationService.notificationThreshold))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -60,19 +72,19 @@ struct SettingsView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Button("Reiniciar notificaciones") {
+                Button(NSLocalizedString("reset_notifications", comment: "Reset notifications button")) {
                     notificationService.resetNotifiedDevices()
                 }
                 .buttonStyle(.borderless)
 
-                Text("Fuerza el reinicio de las notificaciones para todos los dispositivos")
+                Text(NSLocalizedString("reset_notifications_description", comment: "Reset notifications description"))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
 
             Divider()
 
-            Button("Cerrar") {
+            Button(NSLocalizedString("close", comment: "Close button")) {
                 dismiss()
             }
             .buttonStyle(.bordered)
