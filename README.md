@@ -1,10 +1,10 @@
-# MyMouseBattery
+# Input Battery
 
-Menu bar app para monitorear la batería del Magic Mouse y Magic Keyboard en macOS.
+Menu bar app para monitorear la batería de Mouse y Keyboard en macOS.
 
 ## Funcionalidades
 
-- **Monitorización en tiempo real** de la batería del Magic Mouse y Magic Keyboard
+- **Monitorización en tiempo real** de la batería del Mouse y Keyboard
 - **Notificaciones** cuando la batería baja del umbral configurado
 - **Menú bar** con indicador visual del nivel de batería
 - **Configuración editable** del umbral de notificación (5-50%)

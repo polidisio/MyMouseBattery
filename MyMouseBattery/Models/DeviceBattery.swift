@@ -7,9 +7,9 @@ struct DeviceBattery: Identifiable, Equatable {
     let deviceType: DeviceType
 
     enum DeviceType: String {
-        case mouse = "Magic Mouse"
-        case keyboard = "Magic Keyboard"
-        case trackpad = "Magic Trackpad"
+        case mouse = "Mouse"
+        case keyboard = "Keyboard"
+        case trackpad = "Trackpad"
         case unknown = "Unknown"
     }
 
