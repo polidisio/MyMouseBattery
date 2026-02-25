@@ -33,6 +33,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         setupStatusItem()
         setupPopover()
 
+        batteryService.notificationService = notificationService
+
         batteryService.startMonitoring(interval: 60)
 
         batteryService.onDevicesUpdated = { [weak self] in
