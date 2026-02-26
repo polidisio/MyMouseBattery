@@ -75,7 +75,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             symbolName = "battery.0"
         }
 
-        let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
+        let color: NSColor
+        if lowestLevel < 15 {
+            color = .systemRed
+        } else if lowestLevel < 30 {
+            color = .systemYellow
+        } else {
+            color = .labelColor
+        }
+
+        var config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
+        config = config.applying(.init(paletteColors: [color]))
         if let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "Battery level") {
             button.image = image.withSymbolConfiguration(config)
         }
