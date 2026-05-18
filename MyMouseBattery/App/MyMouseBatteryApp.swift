@@ -130,10 +130,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     @objc func togglePopover() {
         if popover.isShown {
+            batteryService.setPopoverVisible(false)
             popover.performClose(nil)
         } else {
             if let button = statusItem.button {
-                batteryService.refresh()
+                batteryService.setPopoverVisible(true)
                 if #available(macOS 14.0, *) {
                     NSApp.activate()
                 } else {

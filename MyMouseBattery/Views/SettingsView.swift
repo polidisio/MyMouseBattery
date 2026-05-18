@@ -64,11 +64,14 @@ struct SettingsView: View {
                         in: Double(SettingsConfig.minThreshold)...Double(SettingsConfig.maxThreshold),
                         step: Double(SettingsConfig.thresholdStep)
                     )
+                    .disabled(!notificationService.isAuthorized)
 
                     Text("\(notificationService.notificationThreshold)%")
                         .font(.system(.body, design: .monospaced))
                         .frame(width: 40)
+                        .foregroundColor(notificationService.isAuthorized ? .primary : .secondary)
                 }
+                .opacity(notificationService.isAuthorized ? 1 : 0.5)
 
                 Text(String(format: NSLocalizedString("notification_threshold_description", comment: "Notification threshold description"), notificationService.notificationThreshold))
                     .font(.caption)
@@ -96,6 +99,10 @@ struct SettingsView: View {
             .buttonStyle(.bordered)
 
             Spacer()
+
+            Text("Version 1.1")
+                .font(.caption2)
+                .foregroundColor(.secondary)
         }
         .padding()
         .frame(width: 280)

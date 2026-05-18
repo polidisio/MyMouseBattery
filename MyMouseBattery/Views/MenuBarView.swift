@@ -9,7 +9,22 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if batteryService.devices.isEmpty {
+            if let error = batteryService.detectionError {
+                HStack {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.yellow)
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding(8)
+                .background(Color.yellow.opacity(0.1))
+                .cornerRadius(6)
+                .padding(.horizontal, 12)
+                .padding(.top, 8)
+            }
+
+            if batteryService.devices.isEmpty && batteryService.detectionError == nil {
                 Text(NSLocalizedString("no_devices_detected", comment: "Message when no Bluetooth devices found"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -27,6 +42,24 @@ struct MenuBarView: View {
                     }
                 }
             }
+
+            HStack {
+                Text("Battery Status")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Button(action: {
+                    batteryService.refresh()
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.caption)
+                }
+                .buttonStyle(.borderless)
+                .keyboardShortcut("r", modifiers: .command)
+                .help("Refresh battery levels")
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
 
             Divider()
                 .padding(.vertical, 4)

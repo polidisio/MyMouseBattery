@@ -8,20 +8,37 @@ private let logger = Logger(subsystem: "com.jmaudisio.MyMouseBattery", category:
 
 class BatteryService: ObservableObject {
     static let shared = BatteryService()
-    
+
     @Published var devices: [DeviceBattery] = []
     @Published var lastUpdate: Date?
+    @Published var detectionError: String?
 
     private static let defaultMonitoringInterval: TimeInterval = 60
+    private static let hiddenMonitoringInterval: TimeInterval = 300
     private let devicesQueue = DispatchQueue(label: "com.jmaudisio.MyMouseBattery.devicesQueue")
 
     private var timer: Timer?
+    private var isRefreshing = false
+    private(set) var isPopoverVisible = false
     var onDevicesUpdated: (() -> Void)?
     weak var notificationService: NotificationService?
 
     init() {
         refresh()
         startMonitoring()
+    }
+
+    func setPopoverVisible(_ visible: Bool) {
+        isPopoverVisible = visible
+        if visible {
+            refresh()
+        }
+        restartTimer()
+    }
+
+    private func restartTimer() {
+        let interval = isPopoverVisible ? Self.defaultMonitoringInterval : Self.hiddenMonitoringInterval
+        startMonitoring(interval: interval)
     }
 
     func startMonitoring(interval: TimeInterval = defaultMonitoringInterval) {
@@ -32,14 +49,19 @@ class BatteryService: ObservableObject {
     }
 
     func refresh() {
+        guard !isRefreshing else { return }
+        isRefreshing = true
+
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
-            let detectedDevices = self.detectDevices()
+            let (detectedDevices, error) = Self.detectDevices()
             self.devicesQueue.async {
                 let devicesToNotify = detectedDevices
                 DispatchQueue.main.async {
                     self.devices = devicesToNotify
+                    self.detectionError = error
                     self.lastUpdate = Date()
+                    self.isRefreshing = false
                     self.onDevicesUpdated?()
                     self.notificationService?.checkBatteryLevels(for: devicesToNotify)
                 }
@@ -47,8 +69,9 @@ class BatteryService: ObservableObject {
         }
     }
 
-    private func detectDevices() -> [DeviceBattery] {
+    private static func detectDevices() -> ([DeviceBattery], String?) {
         var devices: [DeviceBattery] = []
+        var error: String?
 
         let matchingDict = IOServiceMatching("AppleDeviceManagementHIDEventService")
 
@@ -56,8 +79,9 @@ class BatteryService: ObservableObject {
         let result = IOServiceGetMatchingServices(kIOMainPortDefault, matchingDict, &iterator)
 
         guard result == KERN_SUCCESS else {
-            logger.error("IOKit: IOServiceGetMatchingServices failed: \(self.kernReturnToString(result))")
-            return devices
+            let errorMsg = "Could not access Bluetooth devices. Please check Bluetooth is enabled."
+            logger.error("IOKit: IOServiceGetMatchingServices failed: \(Self.kernReturnToString(result))")
+            return (devices, errorMsg)
         }
 
         defer { IOObjectRelease(iterator) }
@@ -66,10 +90,10 @@ class BatteryService: ObservableObject {
         while object != 0 {
             defer { IOObjectRelease(object); object = IOIteratorNext(iterator) }
 
-            if let batteryPercent = getBatteryPercent(from: object),
-               let productName = getProductName(from: object) {
+            if let batteryPercent = Self.getBatteryPercent(from: object),
+               let productName = Self.getProductName(from: object) {
 
-                let deviceType = determineDeviceType(from: productName)
+                let deviceType = Self.determineDeviceType(from: productName)
                 let device = DeviceBattery(
                     id: productName.lowercased().replacingOccurrences(of: " ", with: "-"),
                     name: productName,
@@ -80,10 +104,14 @@ class BatteryService: ObservableObject {
             }
         }
 
-        return devices
+        if devices.isEmpty {
+            error = "No battery devices found. Make sure your Magic Mouse/Keyboard is connected."
+        }
+
+        return (devices, error)
     }
 
-    private func kernReturnToString(_ result: kern_return_t) -> String {
+    private static func kernReturnToString(_ result: kern_return_t) -> String {
         switch result {
         case KERN_SUCCESS: return "Success"
         case KERN_INVALID_ADDRESS: return "Invalid address"
@@ -96,7 +124,7 @@ class BatteryService: ObservableObject {
         }
     }
 
-    private func getBatteryPercent(from object: io_object_t) -> Int? {
+    private static func getBatteryPercent(from object: io_object_t) -> Int? {
         guard let batteryValue = IORegistryEntryCreateCFProperty(
             object,
             "BatteryPercent" as CFString,
@@ -116,7 +144,7 @@ class BatteryService: ObservableObject {
         return nil
     }
 
-    private func getProductName(from object: io_object_t) -> String? {
+    private static func getProductName(from object: io_object_t) -> String? {
         guard let productDict = IORegistryEntryCreateCFProperty(
             object,
             "Product" as CFString,
@@ -138,7 +166,7 @@ class BatteryService: ObservableObject {
         return nil
     }
 
-    private func determineDeviceType(from productName: String) -> DeviceBattery.DeviceType {
+    private static func determineDeviceType(from productName: String) -> DeviceBattery.DeviceType {
         let lowercaseName = productName.lowercased()
 
         if lowercaseName.contains("mouse") {

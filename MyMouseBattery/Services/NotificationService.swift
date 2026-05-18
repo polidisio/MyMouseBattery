@@ -5,6 +5,8 @@ import os
 private let logger = Logger(subsystem: "com.jmaudisio.MyMouseBattery", category: "NotificationService")
 
 class NotificationService: ObservableObject {
+    private static let hysteresisBuffer = 2
+
     @Published var notificationThreshold: Int {
         didSet {
             UserDefaults.standard.set(notificationThreshold, forKey: "notificationThreshold")
@@ -23,6 +25,14 @@ class NotificationService: ObservableObject {
         requestAuthorization()
     }
 
+    func syncAuthorizationStatus() {
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            DispatchQueue.main.async {
+                self?.isAuthorized = settings.authorizationStatus == .authorized
+            }
+        }
+    }
+
     private func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
             DispatchQueue.main.async {
@@ -37,6 +47,8 @@ class NotificationService: ObservableObject {
     func checkBatteryLevels(for devices: [DeviceBattery]) {
         let threshold = self.notificationThreshold
 
+        syncAuthorizationStatus()
+
         for device in devices {
             guard let level = device.batteryLevel else { continue }
 
@@ -45,7 +57,7 @@ class NotificationService: ObservableObject {
                 notifiedDevices.insert(device.id)
             }
 
-            if level > threshold {
+            if level > threshold + Self.hysteresisBuffer {
                 notifiedDevices.remove(device.id)
             }
         }
