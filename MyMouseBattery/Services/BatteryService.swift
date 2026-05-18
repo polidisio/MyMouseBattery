@@ -12,20 +12,19 @@ class BatteryService: ObservableObject {
     @Published var devices: [DeviceBattery] = []
     @Published var lastUpdate: Date?
 
+    private static let defaultMonitoringInterval: TimeInterval = 60
+    private let devicesQueue = DispatchQueue(label: "com.jmaudisio.MyMouseBattery.devicesQueue")
+
     private var timer: Timer?
     var onDevicesUpdated: (() -> Void)?
-    var notificationService: NotificationService?
+    weak var notificationService: NotificationService?
 
     init() {
         refresh()
         startMonitoring()
     }
 
-    deinit {
-        timer?.invalidate()
-    }
-
-    func startMonitoring(interval: TimeInterval = 60) {
+    func startMonitoring(interval: TimeInterval = defaultMonitoringInterval) {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             self?.refresh()
@@ -34,12 +33,16 @@ class BatteryService: ObservableObject {
 
     func refresh() {
         DispatchQueue.global(qos: .background).async { [weak self] in
-            let detectedDevices = self?.detectDevices() ?? []
-            DispatchQueue.main.async {
-                self?.devices = detectedDevices
-                self?.lastUpdate = Date()
-                self?.onDevicesUpdated?()
-                self?.notificationService?.checkBatteryLevels(for: detectedDevices)
+            guard let self = self else { return }
+            let detectedDevices = self.detectDevices()
+            self.devicesQueue.async {
+                let devicesToNotify = detectedDevices
+                DispatchQueue.main.async {
+                    self.devices = devicesToNotify
+                    self.lastUpdate = Date()
+                    self.onDevicesUpdated?()
+                    self.notificationService?.checkBatteryLevels(for: devicesToNotify)
+                }
             }
         }
     }
@@ -53,7 +56,7 @@ class BatteryService: ObservableObject {
         let result = IOServiceGetMatchingServices(kIOMainPortDefault, matchingDict, &iterator)
 
         guard result == KERN_SUCCESS else {
-            logger.warning("IOKit: Failed to get matching services (result: \(result))")
+            logger.error("IOKit: IOServiceGetMatchingServices failed: \(self.kernReturnToString(result))")
             return devices
         }
 
@@ -80,8 +83,21 @@ class BatteryService: ObservableObject {
         return devices
     }
 
+    private func kernReturnToString(_ result: kern_return_t) -> String {
+        switch result {
+        case KERN_SUCCESS: return "Success"
+        case KERN_INVALID_ADDRESS: return "Invalid address"
+        case KERN_PROTECTION_FAILURE: return "Protection failure"
+        case KERN_NO_SPACE: return "No space"
+        case KERN_INVALID_ARGUMENT: return "Invalid argument"
+        case KERN_FAILURE: return "Failure"
+        case KERN_RESOURCE_SHORTAGE: return "Resource shortage"
+        default: return "Unknown (\(result))"
+        }
+    }
+
     private func getBatteryPercent(from object: io_object_t) -> Int? {
-        guard let batteryDict = IORegistryEntryCreateCFProperty(
+        guard let batteryValue = IORegistryEntryCreateCFProperty(
             object,
             "BatteryPercent" as CFString,
             kCFAllocatorDefault,
@@ -90,7 +106,14 @@ class BatteryService: ObservableObject {
             return nil
         }
 
-        return batteryDict as? Int
+        if let intValue = batteryValue as? Int {
+            return intValue
+        }
+        if let doubleValue = batteryValue as? Double {
+            return Int(doubleValue)
+        }
+        logger.warning("BatteryPercent: unexpected type \(type(of: batteryValue))")
+        return nil
     }
 
     private func getProductName(from object: io_object_t) -> String? {
@@ -128,26 +151,48 @@ class BatteryService: ObservableObject {
 
         return .unknown
     }
+
+    func stopMonitoring() {
+        timer?.invalidate()
+        timer = nil
+    }
 }
 
 class LaunchAtLoginService: ObservableObject {
+    private static let launchAtLoginHasBeenSetKey = "launchAtLoginHasBeenSet"
+
     @Published var isEnabled: Bool {
         didSet {
+            guard oldValue != isEnabled else { return }
             UserDefaults.standard.set(isEnabled, forKey: "launchAtLogin")
+            UserDefaults.standard.set(true, forKey: Self.launchAtLoginHasBeenSetKey)
             updateLaunchAtLogin()
         }
     }
 
     init() {
-        self.isEnabled = UserDefaults.standard.bool(forKey: "launchAtLogin")
+        let hasExplicitPreference = UserDefaults.standard.object(forKey: Self.launchAtLoginHasBeenSetKey) != nil
+        let storedValue = UserDefaults.standard.bool(forKey: "launchAtLogin")
+
         if #available(macOS 13.0, *) {
-            syncWithSystemStatus()
+            let systemEnabled = SMAppService.mainApp.status == .enabled
+            if hasExplicitPreference {
+                self.isEnabled = storedValue
+            } else {
+                self.isEnabled = systemEnabled
+                if systemEnabled {
+                    UserDefaults.standard.set(true, forKey: Self.launchAtLoginHasBeenSetKey)
+                }
+            }
+        } else {
+            let legacyEnabled = Self.isLegacyLaunchAtLoginEnabled()
+            self.isEnabled = hasExplicitPreference ? storedValue : legacyEnabled
         }
     }
 
     @available(macOS 13.0, *)
     private func syncWithSystemStatus() {
-        if SMAppService.mainApp.status == .enabled {
+        if SMAppService.mainApp.status == .enabled && UserDefaults.standard.object(forKey: Self.launchAtLoginHasBeenSetKey) == nil {
             isEnabled = true
         }
     }
@@ -163,6 +208,21 @@ class LaunchAtLoginService: ObservableObject {
             } catch {
                 logger.error("Error updating launch at login: \(error)")
             }
+        } else {
+            Self.setLegacyLaunchAtLogin(enabled: isEnabled)
+        }
+    }
+
+    private static func isLegacyLaunchAtLoginEnabled() -> Bool {
+        if let bundleIdentifier = Bundle.main.bundleIdentifier {
+            return SMLoginItemSetEnabled(bundleIdentifier as CFString, false)
+        }
+        return false
+    }
+
+    private static func setLegacyLaunchAtLogin(enabled: Bool) {
+        if let bundleIdentifier = Bundle.main.bundleIdentifier {
+            SMLoginItemSetEnabled(bundleIdentifier as CFString, enabled)
         }
     }
 }

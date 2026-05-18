@@ -1,5 +1,11 @@
 import SwiftUI
 
+private enum SettingsConfig {
+    static let minThreshold = 5
+    static let maxThreshold = 50
+    static let thresholdStep = 5
+}
+
 struct SettingsView: View {
     @ObservedObject var notificationService: NotificationService
     @ObservedObject var launchAtLoginService: LaunchAtLoginService
@@ -53,10 +59,10 @@ struct SettingsView: View {
                     Slider(
                         value: Binding(
                             get: { Double(notificationService.notificationThreshold) },
-                            set: { notificationService.notificationThreshold = Int($0) }
+                            set: { notificationService.notificationThreshold = Int($0.rounded()) }
                         ),
-                        in: 5...50,
-                        step: 5
+                        in: Double(SettingsConfig.minThreshold)...Double(SettingsConfig.maxThreshold),
+                        step: Double(SettingsConfig.thresholdStep)
                     )
 
                     Text("\(notificationService.notificationThreshold)%")

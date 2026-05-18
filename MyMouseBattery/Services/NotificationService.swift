@@ -14,7 +14,6 @@ class NotificationService: ObservableObject {
     @Published var isAuthorized: Bool = true
 
     private var notifiedDevices: Set<String> = []
-    private var devices: [DeviceBattery] = []
 
     init() {
         self.notificationThreshold = UserDefaults.standard.integer(forKey: "notificationThreshold")
@@ -36,17 +35,17 @@ class NotificationService: ObservableObject {
     }
 
     func checkBatteryLevels(for devices: [DeviceBattery]) {
-        self.devices = devices
+        let threshold = self.notificationThreshold
 
         for device in devices {
             guard let level = device.batteryLevel else { continue }
 
-            if level <= notificationThreshold && !notifiedDevices.contains(device.id) {
+            if level <= threshold && !notifiedDevices.contains(device.id) {
                 sendNotification(for: device)
                 notifiedDevices.insert(device.id)
             }
 
-            if level > notificationThreshold {
+            if level > threshold {
                 notifiedDevices.remove(device.id)
             }
         }

@@ -38,11 +38,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         batteryService.startMonitoring(interval: 60)
 
         batteryService.onDevicesUpdated = { [weak self] in
+            guard let self = self else { return }
             DispatchQueue.main.async {
-                self?.updateStatusItemImage()
-                if let self = self {
-                    self.notificationService.checkBatteryLevels(for: self.batteryService.devices)
-                }
+                self.updateStatusItemImage()
+                self.notificationService.checkBatteryLevels(for: self.batteryService.devices)
             }
         }
     }
