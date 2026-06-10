@@ -344,6 +344,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jmaudisio.MyMouseBattery;
 				SDKROOT = macosx;
 			};
@@ -365,6 +366,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jmaudisio.MyMouseBattery;
 				SDKROOT = macosx;
 			};
