@@ -100,7 +100,7 @@ struct SettingsView: View {
 
             Spacer()
 
-            Text("Version 1.1")
+            Text(String(format: NSLocalizedString("version_format", comment: "App version display"), Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"))
                 .font(.caption2)
                 .foregroundColor(.secondary)
         }

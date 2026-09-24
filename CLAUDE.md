@@ -11,7 +11,7 @@
 
 - **Language:** Swift
 - **Framework:** SwiftUI + AppKit
-- **Platform:** macOS 12.0+ (Monterey)
+- **Platform:** macOS 14.0+ (Sonoma). Bumped from 12.0 in 2026-09 — Xcode 27 / SDK macosx27.0 (paired with macOS Golden Gate) no longer builds for deployment targets below 14.0.
 - **Architecture:** MVVM
 - **System:** IOKit (battery info), UserNotifications
 - **Build System:** XcodeGen (project.yml)

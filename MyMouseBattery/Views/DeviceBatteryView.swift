@@ -2,6 +2,9 @@ import SwiftUI
 
 struct DeviceBatteryView: View {
     let device: DeviceBattery
+    let history: [BatteryReading]
+
+    @State private var showingHistory = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -30,18 +33,26 @@ struct DeviceBatteryView: View {
             }
 
             Spacer()
+
+            Button(action: { showingHistory = true }) {
+                Image(systemName: "chart.line.uptrend.xyaxis")
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.borderless)
+            .help(NSLocalizedString("view_history", comment: "View battery history"))
         }
         .padding(.vertical, 4)
+        .sheet(isPresented: $showingHistory) {
+            BatteryHistoryView(deviceName: device.displayName, readings: history)
+        }
     }
 
     private var batteryColor: Color {
-        let level = device.batteryPercentage
-        if level >= 50 {
-            return .green
-        } else if level >= 20 {
-            return .yellow
-        } else {
-            return .red
+        switch DeviceBattery.batteryCategory(for: device.batteryLevel) {
+        case .critical: return .red
+        case .warning: return .yellow
+        case .normal: return .green
+        case .unknown: return .secondary
         }
     }
 }
@@ -64,12 +75,10 @@ struct BatteryLevelIndicator: View {
     }
 
     private var fillColor: Color {
-        if level >= 50 {
-            return .green
-        } else if level >= 20 {
-            return .yellow
-        } else {
-            return .red
+        switch DeviceBattery.batteryCategory(for: level) {
+        case .critical: return .red
+        case .warning: return .yellow
+        default: return .green
         }
     }
 }

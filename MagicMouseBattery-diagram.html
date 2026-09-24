@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicMouseBattery - Diagrama de Arquitectura</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .layer {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .layer-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #667eea;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .component {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .component-title {
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .component-desc {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 15px 0;
+        }
+
+        .data-flow {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-left: 4px solid #fdcb6e;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .data-flow-title {
+            font-weight: 600;
+            color: #d63031;
+            margin-bottom: 10px;
+        }
+
+        .flow-item {
+            color: #555;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .flow-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fdcb6e;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            font-size: 0.95em;
+        }
+
+        .footer-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            color: #555;
+        }
+
+        .footer-title {
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .components {
+                grid-template-columns: 1fr;
+            }
+
+            .footer {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖱️ MagicMouseBattery</h1>
+        <p class="subtitle">Aplicación macOS para monitorear batería de dispositivos Bluetooth</p>
+
+        <div class="diagram">
+            <!-- Presentation Layer -->
+            <div class="layer">
+                <div class="layer-title">🎨 Capa Presentación</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">Menu Bar Icon</div>
+                        <div class="component-desc">Icono en la barra de menú de macOS que muestra nivel de batería con indicador visual y texto en color</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">MenuBarView (SwiftUI)</div>
+                        <div class="component-desc">Vista principal del popover con lista de dispositivos y configuración</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">DeviceBatteryView</div>
+                        <div class="component-desc">Vista individual para cada dispositivo mostrando nombre, batería, ícono y botón de historial</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">BatteryHistoryView</div>
+                        <div class="component-desc">Sheet con gráfico (Charts nativo) del nivel de batería en los últimos 7 días por dispositivo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <!-- Service Layer -->
+            <div class="layer">
+                <div class="layer-title">⚙️ Capa Servicios</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">BatteryService</div>
+                        <div class="component-desc">Singleton que gestiona detección de dispositivos via IOKit, monitoreo continuo (60s visible, 300s oculto), actualización de estado e historial de batería (7 días, persistido en UserDefaults)</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">NotificationService</div>
+                        <div class="component-desc">Envía notificaciones del sistema cuando batería baja del umbral configurado</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">LaunchAtLoginService</div>
+                        <div class="component-desc">Gestiona la ejecución de la app al iniciar sesión</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <!-- Model Layer -->
+            <div class="layer">
+                <div class="layer-title">📦 Capa Modelos</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">DeviceBattery</div>
+                        <div class="component-desc">Estructura con id, name, batteryLevel, deviceType. Tipos: Magic Mouse, Magic Keyboard, Magic Trackpad</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">BatteryReading</div>
+                        <div class="component-desc">Estructura Codable con date, level. Una lectura puntual de batería usada en el historial por dispositivo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <!-- System Integration -->
+            <div class="layer">
+                <div class="layer-title">🔧 Integraciones del Sistema</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">IOKit</div>
+                        <div class="component-desc">Framework de macOS para acceder a dispositivos USB/Bluetooth. Detecta AppleDeviceManagementHIDEventService</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">UserNotifications</div>
+                        <div class="component-desc">Framework para enviar notificaciones del sistema</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">AppKit</div>
+                        <div class="component-desc">Manejo del popover, status item y ciclo de vida de la app</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow -->
+            <div class="data-flow">
+                <div class="data-flow-title">📊 Flujo de Datos Principales</div>
+                <div class="flow-item">App Launch → AppDelegate.applicationDidFinishLaunching()</div>
+                <div class="flow-item">setupStatusItem() → Menu Bar Icon visible</div>
+                <div class="flow-item">BatteryService.startMonitoring() → Timer cada 60s/300s</div>
+                <div class="flow-item">Refresh() → IOKit detecta dispositivos Bluetooth</div>
+                <div class="flow-item">@Published devices actualiza MenuBarView y DeviceBatteryView</div>
+                <div class="flow-item">recordHistory() añade una BatteryReading por dispositivo (retención 7 días, UserDefaults)</div>
+                <div class="flow-item">onDevicesUpdated callback → updateStatusItemImage() + checkBatteryLevels()</div>
+                <div class="flow-item">Si batería < umbral → NotificationService envía notificación</div>
+                <div class="flow-item">Menu icon color y porcentaje se actualizan dinámicamente</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-item">
+                <div class="footer-title">🏗️ Patrón Arquitectónico</div>
+                MVVM + Singleton Pattern + Observer Pattern (Combine)
+            </div>
+            <div class="footer-item">
+                <div class="footer-title">⚡ Tecnologías</div>
+                SwiftUI, AppKit, IOKit, Combine, UserNotifications, Charts
+            </div>
+            <div class="footer-item">
+                <div class="footer-title">📱 Plataforma</div>
+                macOS 14.0+ • Xcode 15.0+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

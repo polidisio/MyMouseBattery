@@ -1,0 +1,525 @@
+{
+  "project": "MagicMouseBattery",
+  "description": "Menu bar app para monitorear la batería del Magic Mouse, Magic Keyboard y Magic Trackpad en macOS",
+  "type": "macOS Application",
+  "platform": "macOS 14.0+",
+  "language": "Swift (SwiftUI + AppKit)",
+  "architecture": {
+    "pattern": "MVVM + Singleton Pattern + Observer Pattern",
+    "layers": [
+      "Presentation Layer (SwiftUI + AppKit)",
+      "Service Layer (Business Logic)",
+      "Model Layer (Data Structures)",
+      "System Integration Layer (IOKit, UserNotifications)"
+    ]
+  },
+  "components": {
+    "app": {
+      "name": "MyMouseBatteryApp",
+      "type": "SwiftUI App",
+      "file": "MyMouseBatteryApp.swift",
+      "description": "Entry point de la aplicación",
+      "responsibilities": [
+        "Define la escena principal (Settings)",
+        "Inicializa BatteryService como StateObject",
+        "Inyecta AppDelegate"
+      ]
+    },
+    "appDelegate": {
+      "name": "AppDelegate",
+      "type": "NSApplicationDelegate",
+      "file": "MyMouseBatteryApp.swift",
+      "description": "Gestor del ciclo de vida de la aplicación",
+      "responsibilities": [
+        "Configurar status item en menu bar",
+        "Crear y gestionar popover",
+        "Actualizar icono del menu bar",
+        "Escuchar eventos de batería",
+        "Enviar notificaciones"
+      ],
+      "properties": [
+        {
+          "name": "statusItem",
+          "type": "NSStatusItem",
+          "description": "Icono en la barra de menú de macOS"
+        },
+        {
+          "name": "popover",
+          "type": "NSPopover",
+          "description": "Ventana flotante con lista de dispositivos"
+        },
+        {
+          "name": "batteryService",
+          "type": "BatteryService",
+          "description": "Referencia al servicio singleton"
+        }
+      ],
+      "methods": [
+        {
+          "name": "applicationDidFinishLaunching",
+          "description": "Configura status item, popover e inicia monitoreo"
+        },
+        {
+          "name": "setupStatusItem",
+          "description": "Crea icono en menu bar con acción togglePopover"
+        },
+        {
+          "name": "setupPopover",
+          "description": "Crea NSPopover con MenuBarView como contenido"
+        },
+        {
+          "name": "updateStatusItemImage",
+          "description": "Actualiza icono y color basado en nivel de batería más bajo"
+        },
+        {
+          "name": "togglePopover",
+          "description": "Abre/cierra popover al hacer clic en menu bar"
+        }
+      ]
+    }
+  },
+  "services": {
+    "batteryService": {
+      "name": "BatteryService",
+      "type": "ObservableObject (Singleton)",
+      "file": "BatteryService.swift",
+      "description": "Gestiona detección de dispositivos Bluetooth y monitoreo de batería",
+      "pattern": "Singleton + Combine ObservableObject",
+      "properties": [
+        {
+          "name": "devices",
+          "type": "@Published [DeviceBattery]",
+          "description": "Lista de dispositivos detectados"
+        },
+        {
+          "name": "lastUpdate",
+          "type": "@Published Date?",
+          "description": "Timestamp de la última detección"
+        },
+        {
+          "name": "detectionError",
+          "type": "@Published String?",
+          "description": "Mensaje de error si hay problema al detectar"
+        },
+        {
+          "name": "isPopoverVisible",
+          "type": "Bool",
+          "description": "Indica si el popover está abierto"
+        },
+        {
+          "name": "onDevicesUpdated",
+          "type": "(() -> Void)?",
+          "description": "Closure que se ejecuta cuando hay nuevos dispositivos"
+        },
+        {
+          "name": "history",
+          "type": "@Published [String: [BatteryReading]]",
+          "description": "Historial de lecturas de batería por deviceId, retenido 7 días, persistido en UserDefaults como JSON"
+        }
+      ],
+      "methods": [
+        {
+          "name": "refresh",
+          "description": "Detecta dispositivos via IOKit en background y actualiza @Published"
+        },
+        {
+          "name": "recordHistory",
+          "description": "Añade una BatteryReading por dispositivo en cada refresh, descarta lecturas fuera de la ventana de 7 días y persiste"
+        },
+        {
+          "name": "loadHistory / saveHistory",
+          "description": "Codifica/decodifica el historial como JSON en UserDefaults (clave batteryHistory)"
+        },
+        {
+          "name": "startMonitoring(interval:)",
+          "description": "Inicia Timer para refresh periódico",
+          "intervals": {
+            "popover_visible": "60 segundos",
+            "popover_hidden": "300 segundos"
+          }
+        },
+        {
+          "name": "setPopoverVisible",
+          "description": "Actualiza intervalo de monitoreo cuando popover abre/cierra"
+        },
+        {
+          "name": "detectDevices (static)",
+          "description": "Usa IOKit para encontrar dispositivos AppleDeviceManagementHIDEventService",
+          "iokit_flow": [
+            "IOServiceMatching('AppleDeviceManagementHIDEventService')",
+            "IOServiceGetMatchingServices",
+            "Itera sobre cada dispositivo encontrado",
+            "Extrae batteryPercent y productName",
+            "Crea DeviceBattery y lo añade a array"
+          ]
+        }
+      ],
+      "threading": {
+        "description": "Usa DispatchQueue para operaciones en background",
+        "queues": [
+          {
+            "name": "devicesQueue",
+            "type": "Serial",
+            "purpose": "Sincronizar acceso a lista de dispositivos"
+          },
+          {
+            "name": "global(qos: .background)",
+            "type": "Concurrent",
+            "purpose": "Detección de dispositivos sin bloquear UI"
+          },
+          {
+            "name": "DispatchQueue.main",
+            "type": "Main",
+            "purpose": "Actualizar @Published variables en UI thread"
+          }
+        ]
+      }
+    },
+    "notificationService": {
+      "name": "NotificationService",
+      "type": "ObservableObject",
+      "file": "NotificationService.swift",
+      "description": "Gestiona notificaciones del sistema cuando batería baja del umbral",
+      "responsibilities": [
+        "Solicitar permisos de notificación al usuario",
+        "Trackear dispositivos notificados recientemente",
+        "Enviar notificaciones UNUserNotification",
+        "Almacenar umbral de batería en UserDefaults"
+      ],
+      "properties": [
+        {
+          "name": "notificationThreshold",
+          "type": "@Published Int",
+          "description": "Umbral de porcentaje para enviar notificación (5-50%)",
+          "storage": "UserDefaults"
+        },
+        {
+          "name": "notifiedDevices",
+          "type": "Set<String>",
+          "description": "IDs de dispositivos ya notificados para evitar spam, con histéresis de 2% para des-marcar"
+        },
+        {
+          "name": "isAuthorized",
+          "type": "@Published Bool",
+          "description": "Estado de autorización de notificaciones del sistema"
+        }
+      ],
+      "methods": [
+        {
+          "name": "checkBatteryLevels",
+          "description": "Itera dispositivos y envía notificación si batería <= threshold; limpia el flag si sube más de threshold + 2%"
+        },
+        {
+          "name": "requestAuthorization / syncAuthorizationStatus",
+          "description": "Pide y sincroniza permisos UNUserNotificationCenter al usuario"
+        },
+        {
+          "name": "resetNotifiedDevices",
+          "description": "Vacía notifiedDevices, usado por el botón 'Reset notifications' en Settings"
+        }
+      ]
+    },
+    "launchAtLoginService": {
+      "name": "LaunchAtLoginService",
+      "type": "Service",
+      "description": "Gestiona que la app se inicie con la sesión de usuario",
+      "methods": [
+        {
+          "name": "enableLaunchAtLogin",
+          "description": "Registra app para ejecutarse al iniciar sesión"
+        },
+        {
+          "name": "disableLaunchAtLogin",
+          "description": "Desregistra app"
+        }
+      ]
+    }
+  },
+  "models": {
+    "deviceBattery": {
+      "name": "DeviceBattery",
+      "type": "Struct",
+      "file": "DeviceBattery.swift",
+      "conformance": "Identifiable, Equatable",
+      "description": "Representa un dispositivo Bluetooth con información de batería",
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "description": "Identificador único (nombre en lowercase sin espacios)"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "description": "Nombre del dispositivo"
+        },
+        {
+          "name": "batteryLevel",
+          "type": "Int?",
+          "description": "Porcentaje de batería (0-100)"
+        },
+        {
+          "name": "deviceType",
+          "type": "DeviceType",
+          "description": "Enum con tipos: mouse, keyboard, trackpad, unknown"
+        }
+      ],
+      "computedProperties": [
+        {
+          "name": "displayName",
+          "description": "Nombre para mostrar (usa deviceType.rawValue si name vacío)"
+        },
+        {
+          "name": "batteryPercentage",
+          "description": "Retorna batteryLevel o 0"
+        },
+        {
+          "name": "iconName",
+          "description": "Nombre de SF Symbol según deviceType"
+        }
+      ]
+    },
+    "batteryReading": {
+      "name": "BatteryReading",
+      "type": "Struct",
+      "file": "BatteryReading.swift",
+      "conformance": "Codable, Identifiable",
+      "description": "Una lectura puntual de batería (fecha + nivel), usada para el historial por dispositivo",
+      "properties": [
+        {
+          "name": "date",
+          "type": "Date",
+          "description": "Momento de la lectura, también usado como id"
+        },
+        {
+          "name": "level",
+          "type": "Int",
+          "description": "Porcentaje de batería en ese momento"
+        }
+      ]
+    }
+  },
+  "views": {
+    "menuBarView": {
+      "name": "MenuBarView",
+      "type": "SwiftUI View",
+      "file": "MenuBarView.swift",
+      "description": "Contenido principal del popover",
+      "bindings": [
+        {
+          "name": "batteryService",
+          "type": "@ObservedObject BatteryService",
+          "dataBinding": "Observa @Published devices, lastUpdate, detectionError"
+        },
+        {
+          "name": "notificationService",
+          "type": "@ObservedObject NotificationService",
+          "dataBinding": "Observa notificationThreshold"
+        },
+        {
+          "name": "launchAtLoginService",
+          "type": "@ObservedObject LaunchAtLoginService"
+        }
+      ],
+      "sections": [
+        {
+          "name": "Error Alert",
+          "description": "Muestra alertas de Bluetooth si hay problema de detección"
+        },
+        {
+          "name": "Device List",
+          "description": "Itera sobre batteryService.devices mostrando DeviceBatteryView"
+        },
+        {
+          "name": "Battery Status Footer",
+          "description": "Muestra timestamp de última actualización"
+        },
+        {
+          "name": "Settings Button",
+          "description": "Abre SettingsView en sheet"
+        }
+      ]
+    },
+    "deviceBatteryView": {
+      "name": "DeviceBatteryView",
+      "type": "SwiftUI View",
+      "file": "DeviceBatteryView.swift",
+      "description": "Componente para mostrar un dispositivo individual",
+      "displays": [
+        "Icon SF Symbol (según deviceType)",
+        "Nombre del dispositivo",
+        "Barra de progreso de batería",
+        "Porcentaje numérico con color (rojo < 15%, amarillo < 30%)",
+        "Botón de historial (chart.line.uptrend.xyaxis) que abre BatteryHistoryView en sheet"
+      ]
+    },
+    "batteryHistoryView": {
+      "name": "BatteryHistoryView",
+      "type": "SwiftUI View",
+      "file": "BatteryHistoryView.swift",
+      "description": "Sheet con gráfico (framework Charts nativo) del historial de batería de un dispositivo",
+      "displays": [
+        "LineMark + PointMark por lectura, eje Y fijo 0-100",
+        "Mensaje vacío si aún no hay lecturas",
+        "Botón cerrar"
+      ]
+    },
+    "settingsView": {
+      "name": "SettingsView",
+      "type": "SwiftUI View",
+      "file": "SettingsView.swift",
+      "description": "Panel de configuración",
+      "settings": [
+        "Launch at Login toggle",
+        "Umbral de notificación (slider 5-50%)",
+        "Advertencia si las notificaciones no están autorizadas",
+        "Botón 'Reset notifications'"
+      ]
+    }
+  },
+  "dataFlow": {
+    "startup": [
+      "MyMouseBatteryApp.main → @main entry point",
+      "AppDelegate.applicationDidFinishLaunching()",
+      "setupStatusItem() → NSStatusBar.system.statusItem() → Menu bar icon visible",
+      "setupPopover() → NSPopover with MenuBarView hosted in NSHostingController",
+      "BatteryService.startMonitoring(interval: 60)",
+      "BatteryService.refresh() → Primer escaneo de dispositivos"
+    ],
+    "monitoring_cycle": [
+      "Timer dispara cada 60s (visible) o 300s (oculto)",
+      "BatteryService.refresh() en background DispatchQueue",
+      "IOKit detecta dispositivos AppleDeviceManagementHIDEventService",
+      "@Published devices emite nuevo valor",
+      "MenuBarView observa cambio y redraw automático",
+      "recordHistory() añade una BatteryReading por dispositivo y persiste en UserDefaults",
+      "onDevicesUpdated callback ejecuta:",
+      "  → updateStatusItemImage() cambia icono color según batería",
+      "  → notificationService.checkBatteryLevels() valida thresholds"
+    ],
+    "notification_flow": [
+      "checkBatteryLevels itera [DeviceBattery]",
+      "Si batteryLevel < notificationThreshold:",
+      "  → Crea UNMutableNotificationContent",
+      "  → UNUserNotificationCenter.current().add(request)",
+      "  → Notificación aparece en Centro de Notificaciones de macOS"
+    ],
+    "menu_bar_update": [
+      "updateStatusItemImage() obtiene lowestLevel = min(devices.batteryLevel)",
+      "Selecciona SF Symbol (battery.100/75/50/25/0)",
+      "Aplica color según nivel (red < 15%, yellow < 30%, label otherwise)",
+      "Aplica SymbolConfiguration paletteColors",
+      "Actualiza button.image en NSStatusItem",
+      "Si lowestLevel < 100: muestra porcentaje en button.attributedTitle"
+    ]
+  },
+  "systemIntegration": {
+    "IOKit": {
+      "framework": "IOKit",
+      "purpose": "Acceso bajo nivel a dispositivos USB/Bluetooth",
+      "detection": {
+        "service": "AppleDeviceManagementHIDEventService",
+        "description": "Servicio de Apple que representa dispositivos HID (Human Interface Devices)",
+        "flow": [
+          "IOServiceMatching() crea diccionario de matching",
+          "IOServiceGetMatchingServices() obtiene iterator",
+          "IOIteratorNext() itera sobre cada dispositivo",
+          "IOObjectRelease() libera recursos"
+        ]
+      },
+      "dataExtraction": {
+        "batteryLevel": "CFNumberRef de propiedad 'BatteryPercent'",
+        "productName": "CFStringRef de propiedad 'ProductName'"
+      }
+    },
+    "UserNotifications": {
+      "framework": "UserNotifications",
+      "methods": [
+        "UNUserNotificationCenter.current().requestAuthorization()",
+        "UNMutableNotificationContent()",
+        "UNTimeIntervalNotificationTrigger()",
+        "UNNotificationRequest()",
+        "center.add(request)"
+      ]
+    },
+    "AppKit": {
+      "components": [
+        "NSStatusBar → Status item en menu bar",
+        "NSStatusItem → Icono clickeable",
+        "NSPopover → Ventana flotante transiente",
+        "NSHostingController → Integra SwiftUI en AppKit",
+        "NSApplicationDelegate → Ciclo de vida app"
+      ]
+    },
+    "SwiftUI": {
+      "features": [
+        "@Published para reactividad",
+        "@ObservedObject para binding",
+        "@StateObject para state local",
+        "Automatic view updates en cambios de state"
+      ]
+    }
+  },
+  "designPatterns": {
+    "singleton": {
+      "name": "Singleton Pattern",
+      "implementation": "BatteryService.shared",
+      "purpose": "Única instancia de servicio de batería compartida en toda la app"
+    },
+    "mvvm": {
+      "name": "MVVM (Model-View-ViewModel)",
+      "components": {
+        "model": "DeviceBattery",
+        "viewModel": "BatteryService (ObservableObject)",
+        "view": "MenuBarView, DeviceBatteryView"
+      }
+    },
+    "observer": {
+      "name": "Observer Pattern",
+      "implementation": "Combine @Published",
+      "subscribers": [
+        "MenuBarView observa batteryService.devices",
+        "AppDelegate observa onDevicesUpdated callback"
+      ]
+    },
+    "dependency_injection": {
+      "name": "Dependency Injection",
+      "examples": [
+        "BatteryService inyectado a MenuBarView",
+        "NotificationService inyectado a MenuBarView"
+      ]
+    }
+  },
+  "technologies": {
+    "ui_framework": "SwiftUI + AppKit",
+    "reactive": "Combine",
+    "threading": "DispatchQueue, Timer",
+    "storage": "UserDefaults (preferencias + historial de batería en JSON)",
+    "charts": "Charts (nativo macOS 14+, sin dependencias externas)",
+    "system_frameworks": [
+      "IOKit - Device detection",
+      "AppKit - Menu bar integration",
+      "UserNotifications - System notifications",
+      "ServiceManagement - Launch at login"
+    ]
+  },
+  "fileStructure": {
+    "app": "MyMouseBatteryApp.swift (App + AppDelegate)",
+    "services": [
+      "BatteryService.swift",
+      "NotificationService.swift",
+      "LaunchAtLoginService.swift"
+    ],
+    "models": [
+      "DeviceBattery.swift",
+      "BatteryReading.swift"
+    ],
+    "views": [
+      "MenuBarView.swift",
+      "DeviceBatteryView.swift",
+      "BatteryHistoryView.swift",
+      "SettingsView.swift"
+    ],
+    "resources": "Assets.xcassets"
+  }
+}

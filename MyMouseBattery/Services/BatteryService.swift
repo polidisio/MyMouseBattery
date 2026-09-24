@@ -12,10 +12,12 @@ class BatteryService: ObservableObject {
     @Published var devices: [DeviceBattery] = []
     @Published var lastUpdate: Date?
     @Published var detectionError: String?
+    @Published private(set) var history: [String: [BatteryReading]] = [:]
 
     private static let defaultMonitoringInterval: TimeInterval = 60
     private static let hiddenMonitoringInterval: TimeInterval = 300
-    private let devicesQueue = DispatchQueue(label: "com.jmaudisio.MyMouseBattery.devicesQueue")
+    private static let historyKey = "batteryHistory"
+    private static let historyRetention: TimeInterval = 7 * 24 * 60 * 60
 
     private var timer: Timer?
     private var isRefreshing = false
@@ -24,6 +26,7 @@ class BatteryService: ObservableObject {
     weak var notificationService: NotificationService?
 
     init() {
+        history = Self.loadHistory()
         refresh()
         startMonitoring()
     }
@@ -55,18 +58,44 @@ class BatteryService: ObservableObject {
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
             let (detectedDevices, error) = Self.detectDevices()
-            self.devicesQueue.async {
-                let devicesToNotify = detectedDevices
-                DispatchQueue.main.async {
-                    self.devices = devicesToNotify
-                    self.detectionError = error
-                    self.lastUpdate = Date()
-                    self.isRefreshing = false
-                    self.onDevicesUpdated?()
-                    self.notificationService?.checkBatteryLevels(for: devicesToNotify)
-                }
+            DispatchQueue.main.async {
+                self.devices = detectedDevices
+                self.detectionError = error
+                self.lastUpdate = Date()
+                self.isRefreshing = false
+                self.recordHistory(for: detectedDevices)
+                self.onDevicesUpdated?()
+                self.notificationService?.checkBatteryLevels(for: detectedDevices)
             }
         }
+    }
+
+    private func recordHistory(for devices: [DeviceBattery]) {
+        let now = Date()
+        let cutoff = now.addingTimeInterval(-Self.historyRetention)
+
+        for device in devices {
+            guard let level = device.batteryLevel else { continue }
+            var readings = history[device.id] ?? []
+            readings.append(BatteryReading(date: now, level: level))
+            readings.removeAll { $0.date < cutoff }
+            history[device.id] = readings
+        }
+
+        saveHistory()
+    }
+
+    private static func loadHistory() -> [String: [BatteryReading]] {
+        guard let data = UserDefaults.standard.data(forKey: historyKey),
+              let decoded = try? JSONDecoder().decode([String: [BatteryReading]].self, from: data) else {
+            return [:]
+        }
+        return decoded
+    }
+
+    private func saveHistory() {
+        guard let data = try? JSONEncoder().encode(history) else { return }
+        UserDefaults.standard.set(data, forKey: Self.historyKey)
     }
 
     private static func detectDevices() -> ([DeviceBattery], String?) {
@@ -79,7 +108,7 @@ class BatteryService: ObservableObject {
         let result = IOServiceGetMatchingServices(kIOMainPortDefault, matchingDict, &iterator)
 
         guard result == KERN_SUCCESS else {
-            let errorMsg = "Could not access Bluetooth devices. Please check Bluetooth is enabled."
+            let errorMsg = NSLocalizedString("bluetooth_access_error", comment: "Error when Bluetooth device access fails")
             logger.error("IOKit: IOServiceGetMatchingServices failed: \(Self.kernReturnToString(result))")
             return (devices, errorMsg)
         }
@@ -105,7 +134,7 @@ class BatteryService: ObservableObject {
         }
 
         if devices.isEmpty {
-            error = "No battery devices found. Make sure your Magic Mouse/Keyboard is connected."
+            error = NSLocalizedString("no_battery_devices_error", comment: "Error when no battery devices are found")
         }
 
         return (devices, error)
@@ -134,14 +163,16 @@ class BatteryService: ObservableObject {
             return nil
         }
 
+        let rawValue: Int
         if let intValue = batteryValue as? Int {
-            return intValue
+            rawValue = intValue
+        } else if let doubleValue = batteryValue as? Double {
+            rawValue = Int(doubleValue)
+        } else {
+            logger.warning("BatteryPercent: unexpected type \(type(of: batteryValue))")
+            return nil
         }
-        if let doubleValue = batteryValue as? Double {
-            return Int(doubleValue)
-        }
-        logger.warning("BatteryPercent: unexpected type \(type(of: batteryValue))")
-        return nil
+        return min(max(rawValue, 0), 100)
     }
 
     private static func getProductName(from object: io_object_t) -> String? {
@@ -201,56 +232,33 @@ class LaunchAtLoginService: ObservableObject {
     init() {
         let hasExplicitPreference = UserDefaults.standard.object(forKey: Self.launchAtLoginHasBeenSetKey) != nil
         let storedValue = UserDefaults.standard.bool(forKey: "launchAtLogin")
+        let systemEnabled = SMAppService.mainApp.status == .enabled
 
-        if #available(macOS 13.0, *) {
-            let systemEnabled = SMAppService.mainApp.status == .enabled
-            if hasExplicitPreference {
-                self.isEnabled = storedValue
-            } else {
-                self.isEnabled = systemEnabled
-                if systemEnabled {
-                    UserDefaults.standard.set(true, forKey: Self.launchAtLoginHasBeenSetKey)
-                }
-            }
+        if hasExplicitPreference {
+            self.isEnabled = storedValue
         } else {
-            let legacyEnabled = Self.isLegacyLaunchAtLoginEnabled()
-            self.isEnabled = hasExplicitPreference ? storedValue : legacyEnabled
+            self.isEnabled = systemEnabled
+            if systemEnabled {
+                UserDefaults.standard.set(true, forKey: Self.launchAtLoginHasBeenSetKey)
+            }
         }
     }
 
-    @available(macOS 13.0, *)
-    private func syncWithSystemStatus() {
+    func syncWithSystemStatus() {
         if SMAppService.mainApp.status == .enabled && UserDefaults.standard.object(forKey: Self.launchAtLoginHasBeenSetKey) == nil {
             isEnabled = true
         }
     }
 
     private func updateLaunchAtLogin() {
-        if #available(macOS 13.0, *) {
-            do {
-                if isEnabled {
-                    try SMAppService.mainApp.register()
-                } else {
-                    try SMAppService.mainApp.unregister()
-                }
-            } catch {
-                logger.error("Error updating launch at login: \(error)")
+        do {
+            if isEnabled {
+                try SMAppService.mainApp.register()
+            } else {
+                try SMAppService.mainApp.unregister()
             }
-        } else {
-            Self.setLegacyLaunchAtLogin(enabled: isEnabled)
-        }
-    }
-
-    private static func isLegacyLaunchAtLoginEnabled() -> Bool {
-        if let bundleIdentifier = Bundle.main.bundleIdentifier {
-            return SMLoginItemSetEnabled(bundleIdentifier as CFString, false)
-        }
-        return false
-    }
-
-    private static func setLegacyLaunchAtLogin(enabled: Bool) {
-        if let bundleIdentifier = Bundle.main.bundleIdentifier {
-            SMLoginItemSetEnabled(bundleIdentifier as CFString, enabled)
+        } catch {
+            logger.error("Error updating launch at login: \(error)")
         }
     }
 }

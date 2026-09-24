@@ -37,3 +37,16 @@ struct DeviceBattery: Identifiable, Equatable {
         }
     }
 }
+
+enum BatteryLevelCategory {
+    case critical, warning, normal, unknown
+}
+
+extension DeviceBattery {
+    static func batteryCategory(for level: Int?) -> BatteryLevelCategory {
+        guard let level = level else { return .unknown }
+        if level < 15 { return .critical }
+        if level < 30 { return .warning }
+        return .normal
+    }
+}

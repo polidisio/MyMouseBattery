@@ -3,121 +3,127 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1472562842AFB4E7C8A1430C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2FF8340DA4A05DEB4D0CE5F9 /* Localizable.strings */; };
-		27F4E997597942E91B0ACE8F /* DeviceBatteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F8EEF65256D5B5A24C0EB2 /* DeviceBatteryView.swift */; };
-		4A6B6A784EDEB85AE2A43022 /* BatteryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC421E97A4301D478ECFCE33 /* BatteryService.swift */; };
-		4A954E841BA781059FF57087 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4378EEB23015972B4D6F012 /* SettingsView.swift */; };
-		53D1EFF4A4149B8822AD155A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF12BFC9C9B080F6C757FA1F /* Assets.xcassets */; };
-		6778F3DE0986ED704F06E710 /* MyMouseBatteryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53E35AE428C7AA59D199D9CB /* MyMouseBatteryApp.swift */; };
-		7C2A5E44C356E8E620F71754 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75030D5EEAE6475C1742DF8 /* NotificationService.swift */; };
-		DB80F316925C23B0E7846DAD /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A236BB6F893B2C4DDB31EC89 /* MenuBarView.swift */; };
-		EC8B998664F673F227687E2D /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E2BAF41E18ACC69C2DA984 /* DeviceBattery.swift */; };
+		19090479F23D06066DDDBBA5 /* BatteryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DBA5A3512CD4BF6F06D880 /* BatteryService.swift */; };
+		39E464D6C01D83DCB0865C7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 774E8EC3CE419CB5C6B06897 /* Assets.xcassets */; };
+		57740DE16A74E7572DF2AD78 /* MyMouseBatteryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B904DBF5043EB6194E3001A0 /* MyMouseBatteryApp.swift */; };
+		744ABB79F7056567AEA348AA /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2D8037626E5966CE18F3BC5 /* NotificationService.swift */; };
+		98AC60A1DDD8E81AEB94856D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD89A722DF58315A07A72E10 /* SettingsView.swift */; };
+		98C1444E753DF0493F536403 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE53C6E8A0DE6905101A5AD3 /* DeviceBattery.swift */; };
+		AA0070156C1B4A71202A716E /* BatteryReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785A88CB82BCC77A8B39D7D3 /* BatteryReading.swift */; };
+		BF151FB95CB173BC3F21B1E3 /* BatteryHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360C001B73983FD2BDF6F971 /* BatteryHistoryView.swift */; };
+		C888CFC263DE067A812D997E /* DeviceBatteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC7CE59BFB741C238E3CADC /* DeviceBatteryView.swift */; };
+		CC865725D195C9305B6497C8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D065EEC9DD075733F4A08496 /* Localizable.strings */; };
+		D4A58148803C3C9852872747 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BB0D3530FEE11B5BD2AA9E /* MenuBarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2BB611CAD4063A38B01A5DB5 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		53E35AE428C7AA59D199D9CB /* MyMouseBatteryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMouseBatteryApp.swift; sourceTree = "<group>"; };
-		5506FBFF5DCA8A9B70D750BF /* MyMouseBattery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyMouseBattery.entitlements; sourceTree = "<group>"; };
-		56896BB00633878C05074FD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		72C01D0128D33217FBB9A883 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8155805DC87B1B5A4E66C187 /* MyMouseBattery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMouseBattery.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A236BB6F893B2C4DDB31EC89 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
-		AC421E97A4301D478ECFCE33 /* BatteryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryService.swift; sourceTree = "<group>"; };
-		AF12BFC9C9B080F6C757FA1F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B75030D5EEAE6475C1742DF8 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		D3F8EEF65256D5B5A24C0EB2 /* DeviceBatteryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBatteryView.swift; sourceTree = "<group>"; };
-		D4378EEB23015972B4D6F012 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		F1E2BAF41E18ACC69C2DA984 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
+		19BB0D3530FEE11B5BD2AA9E /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		33DBA5A3512CD4BF6F06D880 /* BatteryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryService.swift; sourceTree = "<group>"; };
+		360C001B73983FD2BDF6F971 /* BatteryHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHistoryView.swift; sourceTree = "<group>"; };
+		3C674F8635AFFEA0A58D560B /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		6DDA11BAACA8D39906261534 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		774E8EC3CE419CB5C6B06897 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		785A88CB82BCC77A8B39D7D3 /* BatteryReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryReading.swift; sourceTree = "<group>"; };
+		9C294163F153EC074A05EB5C /* MyMouseBattery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyMouseBattery.entitlements; sourceTree = "<group>"; };
+		B904DBF5043EB6194E3001A0 /* MyMouseBatteryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMouseBatteryApp.swift; sourceTree = "<group>"; };
+		BD89A722DF58315A07A72E10 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BDF767ABAE77601A8E06E5A0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BE53C6E8A0DE6905101A5AD3 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
+		DBC7CE59BFB741C238E3CADC /* DeviceBatteryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBatteryView.swift; sourceTree = "<group>"; };
+		E049DE73E2ECD6D68F643AA4 /* MyMouseBattery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMouseBattery.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2D8037626E5966CE18F3BC5 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		056B4ADDC188EE205C15FEA3 /* Views */ = {
+		2594DEF2E21389AD252574B3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D3F8EEF65256D5B5A24C0EB2 /* DeviceBatteryView.swift */,
-				A236BB6F893B2C4DDB31EC89 /* MenuBarView.swift */,
-				D4378EEB23015972B4D6F012 /* SettingsView.swift */,
+				360C001B73983FD2BDF6F971 /* BatteryHistoryView.swift */,
+				DBC7CE59BFB741C238E3CADC /* DeviceBatteryView.swift */,
+				19BB0D3530FEE11B5BD2AA9E /* MenuBarView.swift */,
+				BD89A722DF58315A07A72E10 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		109CBBC838AD68C6E6CF63A4 = {
+		48352346F40E44193FC2E510 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				BD7309FC5E5B100611ADC31F /* MyMouseBattery */,
-				36E46E0E62BF3E25037CBA57 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		131D87595436AB9E5AF05E6B /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				AC421E97A4301D478ECFCE33 /* BatteryService.swift */,
-				B75030D5EEAE6475C1742DF8 /* NotificationService.swift */,
+				33DBA5A3512CD4BF6F06D880 /* BatteryService.swift */,
+				F2D8037626E5966CE18F3BC5 /* NotificationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
 		};
-		164FEFC37C66C88C3256D48A /* Models */ = {
+		4CD07861D7CB945F9262EEF8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F1E2BAF41E18ACC69C2DA984 /* DeviceBattery.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		24FC7C8D73672D24D75215E8 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				AF12BFC9C9B080F6C757FA1F /* Assets.xcassets */,
-				2FF8340DA4A05DEB4D0CE5F9 /* Localizable.strings */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		36E46E0E62BF3E25037CBA57 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8155805DC87B1B5A4E66C187 /* MyMouseBattery.app */,
+				E049DE73E2ECD6D68F643AA4 /* MyMouseBattery.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AE49CE0CFC341A86CF049217 /* App */ = {
+		5366491C2250F8B92345BB36 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				53E35AE428C7AA59D199D9CB /* MyMouseBatteryApp.swift */,
+				785A88CB82BCC77A8B39D7D3 /* BatteryReading.swift */,
+				BE53C6E8A0DE6905101A5AD3 /* DeviceBattery.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C70A2969CD95C95F7EF757CD /* MyMouseBattery */ = {
+			isa = PBXGroup;
+			children = (
+				6DDA11BAACA8D39906261534 /* Info.plist */,
+				9C294163F153EC074A05EB5C /* MyMouseBattery.entitlements */,
+				D71790486FE29E48EB4FABE4 /* App */,
+				5366491C2250F8B92345BB36 /* Models */,
+				EDDFE279E9B598F9A2BDC246 /* Resources */,
+				48352346F40E44193FC2E510 /* Services */,
+				2594DEF2E21389AD252574B3 /* Views */,
+			);
+			path = MyMouseBattery;
+			sourceTree = "<group>";
+		};
+		D71790486FE29E48EB4FABE4 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B904DBF5043EB6194E3001A0 /* MyMouseBatteryApp.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
 		};
-		BD7309FC5E5B100611ADC31F /* MyMouseBattery */ = {
+		E173C3AA418C9A35968011C5 = {
 			isa = PBXGroup;
 			children = (
-				56896BB00633878C05074FD9 /* Info.plist */,
-				5506FBFF5DCA8A9B70D750BF /* MyMouseBattery.entitlements */,
-				AE49CE0CFC341A86CF049217 /* App */,
-				164FEFC37C66C88C3256D48A /* Models */,
-				24FC7C8D73672D24D75215E8 /* Resources */,
-				131D87595436AB9E5AF05E6B /* Services */,
-				056B4ADDC188EE205C15FEA3 /* Views */,
+				C70A2969CD95C95F7EF757CD /* MyMouseBattery */,
+				4CD07861D7CB945F9262EEF8 /* Products */,
 			);
-			path = MyMouseBattery;
+			sourceTree = "<group>";
+		};
+		EDDFE279E9B598F9A2BDC246 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				774E8EC3CE419CB5C6B06897 /* Assets.xcassets */,
+				D065EEC9DD075733F4A08496 /* Localizable.strings */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D91A1B5F95F2DDB8715C5E35 /* MyMouseBattery */ = {
+		374216A22D6B9FF80A96A5A7 /* MyMouseBattery */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 474EBD3F8D00957232B39967 /* Build configuration list for PBXNativeTarget "MyMouseBattery" */;
+			buildConfigurationList = A9C8D574A88B584F977D550C /* Build configuration list for PBXNativeTarget "MyMouseBattery" */;
 			buildPhases = (
-				CF95A03D170BB134201A9881 /* Sources */,
-				AAECD554C35F06F9369D1C98 /* Resources */,
+				6244B7AB036187F7E9CE8369 /* Sources */,
+				7B5E231474E3C0EB8F89C2A2 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -127,25 +133,24 @@
 			packageProductDependencies = (
 			);
 			productName = MyMouseBattery;
-			productReference = 8155805DC87B1B5A4E66C187 /* MyMouseBattery.app */;
+			productReference = E049DE73E2ECD6D68F643AA4 /* MyMouseBattery.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		E5F3FFA03168FAD279A264CF /* Project object */ = {
+		B4B899C1410F9CDAD0F681C2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					D91A1B5F95F2DDB8715C5E35 = {
+					374216A22D6B9FF80A96A5A7 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = F325090FD74121201FC3DF18 /* Build configuration list for PBXProject "MyMouseBattery" */;
-			compatibilityVersion = "Xcode 14.0";
+			buildConfigurationList = DC24908931EE39B93A9C5FE7 /* Build configuration list for PBXProject "MyMouseBattery" */;
 			developmentRegion = es;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -153,51 +158,55 @@
 				en,
 				es,
 			);
-			mainGroup = 109CBBC838AD68C6E6CF63A4;
+			mainGroup = E173C3AA418C9A35968011C5;
 			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 4CD07861D7CB945F9262EEF8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D91A1B5F95F2DDB8715C5E35 /* MyMouseBattery */,
+				374216A22D6B9FF80A96A5A7 /* MyMouseBattery */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		AAECD554C35F06F9369D1C98 /* Resources */ = {
+		7B5E231474E3C0EB8F89C2A2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53D1EFF4A4149B8822AD155A /* Assets.xcassets in Resources */,
-				1472562842AFB4E7C8A1430C /* Localizable.strings in Resources */,
+				39E464D6C01D83DCB0865C7B /* Assets.xcassets in Resources */,
+				CC865725D195C9305B6497C8 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		CF95A03D170BB134201A9881 /* Sources */ = {
+		6244B7AB036187F7E9CE8369 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A6B6A784EDEB85AE2A43022 /* BatteryService.swift in Sources */,
-				EC8B998664F673F227687E2D /* DeviceBattery.swift in Sources */,
-				27F4E997597942E91B0ACE8F /* DeviceBatteryView.swift in Sources */,
-				6778F3DE0986ED704F06E710 /* MyMouseBatteryApp.swift in Sources */,
-				DB80F316925C23B0E7846DAD /* MenuBarView.swift in Sources */,
-				7C2A5E44C356E8E620F71754 /* NotificationService.swift in Sources */,
-				4A954E841BA781059FF57087 /* SettingsView.swift in Sources */,
+				BF151FB95CB173BC3F21B1E3 /* BatteryHistoryView.swift in Sources */,
+				AA0070156C1B4A71202A716E /* BatteryReading.swift in Sources */,
+				19090479F23D06066DDDBBA5 /* BatteryService.swift in Sources */,
+				98C1444E753DF0493F536403 /* DeviceBattery.swift in Sources */,
+				C888CFC263DE067A812D997E /* DeviceBatteryView.swift in Sources */,
+				D4A58148803C3C9852872747 /* MenuBarView.swift in Sources */,
+				57740DE16A74E7572DF2AD78 /* MyMouseBatteryApp.swift in Sources */,
+				744ABB79F7056567AEA348AA /* NotificationService.swift in Sources */,
+				98AC60A1DDD8E81AEB94856D /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		2FF8340DA4A05DEB4D0CE5F9 /* Localizable.strings */ = {
+		D065EEC9DD075733F4A08496 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				72C01D0128D33217FBB9A883 /* en */,
-				2BB611CAD4063A38B01A5DB5 /* es */,
+				BDF767ABAE77601A8E06E5A0 /* en */,
+				3C674F8635AFFEA0A58D560B /* es */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -205,130 +214,52 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		448D11AD5821E0C17B531ABB /* Release */ = {
+		161CA5E7B4AF170CDCF2CF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MyMouseBattery/MyMouseBattery.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = DQ7D6387N8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MyMouseBattery/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jmaudisio.MyMouseBattery;
+			};
+			name = Release;
+		};
+		58068C4468AF95CE7E4777B8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.9;
 			};
 			name = Release;
 		};
-		7F758BE1BA312BB1475CC14D /* Debug */ = {
+		A34C021CEC7165ACFFEE5751 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"DEBUG=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.9;
 			};
 			name = Debug;
 		};
-		995FABB01726DA96B562C81D /* Debug */ = {
+		E8E5A3F3AAC51C52B60E0096 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -337,63 +268,37 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = DQ7D6387N8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = MyMouseBattery/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MARKETING_VERSION = 1.1.0;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jmaudisio.MyMouseBattery;
-				SDKROOT = macosx;
 			};
 			name = Debug;
-		};
-		A98F1E0BD5D3395F6AFB09A8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MyMouseBattery/MyMouseBattery.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = DQ7D6387N8;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = MyMouseBattery/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MARKETING_VERSION = 1.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jmaudisio.MyMouseBattery;
-				SDKROOT = macosx;
-			};
-			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		474EBD3F8D00957232B39967 /* Build configuration list for PBXNativeTarget "MyMouseBattery" */ = {
+		A9C8D574A88B584F977D550C /* Build configuration list for PBXNativeTarget "MyMouseBattery" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				995FABB01726DA96B562C81D /* Debug */,
-				A98F1E0BD5D3395F6AFB09A8 /* Release */,
+				E8E5A3F3AAC51C52B60E0096 /* Debug */,
+				161CA5E7B4AF170CDCF2CF14 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		F325090FD74121201FC3DF18 /* Build configuration list for PBXProject "MyMouseBattery" */ = {
+		DC24908931EE39B93A9C5FE7 /* Build configuration list for PBXProject "MyMouseBattery" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7F758BE1BA312BB1475CC14D /* Debug */,
-				448D11AD5821E0C17B531ABB /* Release */,
+				A34C021CEC7165ACFFEE5751 /* Debug */,
+				58068C4468AF95CE7E4777B8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = E5F3FFA03168FAD279A264CF /* Project object */;
+	rootObject = B4B899C1410F9CDAD0F681C2 /* Project object */;
 }

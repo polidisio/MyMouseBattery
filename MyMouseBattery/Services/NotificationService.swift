@@ -18,10 +18,8 @@ class NotificationService: ObservableObject {
     private var notifiedDevices: Set<String> = []
 
     init() {
-        self.notificationThreshold = UserDefaults.standard.integer(forKey: "notificationThreshold")
-        if notificationThreshold == 0 {
-            notificationThreshold = 20
-        }
+        let storedThreshold = UserDefaults.standard.integer(forKey: "notificationThreshold")
+        self.notificationThreshold = storedThreshold == 0 ? 20 : min(max(storedThreshold, 5), 50)
         requestAuthorization()
     }
 

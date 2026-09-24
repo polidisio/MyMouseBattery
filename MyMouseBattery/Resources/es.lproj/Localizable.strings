@@ -15,6 +15,10 @@
 
 /* DeviceBatteryView */
 "not_detected" = "No detectado";
+"view_history" = "Ver historial de batería";
+
+/* BatteryHistoryView */
+"no_history_data" = "Aún no hay datos de historial. Vuelve más tarde.";
 
 /* NotificationService */
 "low_battery_title" = "Batería Baja";
@@ -22,3 +26,10 @@
 
 /* Notification authorization */
 "notifications_disabled_description" = "Activa las notificaciones en Preferencias del Sistema para recibir alertas de batería baja";
+
+/* BatteryService */
+"bluetooth_access_error" = "No se pudo acceder a los dispositivos Bluetooth. Verifica que el Bluetooth esté activado.";
+"no_battery_devices_error" = "No se encontraron dispositivos con batería. Asegúrate de que tu Magic Mouse/Keyboard esté conectado.";
+
+/* SettingsView */
+"version_format" = "Versión %@";

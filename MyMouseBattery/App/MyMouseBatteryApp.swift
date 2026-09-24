@@ -11,6 +11,8 @@ struct MyMouseBatteryApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
+        // SwiftUI requires a non-empty Scene body; this LSUIElement app has no
+        // app menu to host it, so it's unreachable, kept only to satisfy the type.
         Settings {
             EmptyView()
         }
@@ -41,7 +43,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.updateStatusItemImage()
-                self.notificationService.checkBatteryLevels(for: self.batteryService.devices)
             }
         }
     }
@@ -59,7 +60,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private func updateStatusItemImage() {
         guard let button = statusItem.button else { return }
 
-        let lowestLevel = batteryService.devices.compactMap { $0.batteryLevel }.min() ?? 100
+        let levels = batteryService.devices.compactMap { $0.batteryLevel }
+
+        guard let lowestLevel = levels.min() else {
+            var config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
+            config = config.applying(.init(paletteColors: [.secondaryLabelColor]))
+            if let image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: "No battery data") {
+                button.image = image.withSymbolConfiguration(config)
+            }
+            button.title = ""
+            return
+        }
 
         let symbolName: String
         if lowestLevel > 75 {
@@ -74,40 +85,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             symbolName = "battery.0"
         }
 
-        let color: NSColor
-        if lowestLevel < 15 {
-            color = .systemRed
-        } else if lowestLevel < 30 {
-            color = .systemYellow
-        } else {
-            color = .labelColor
-        }
-
         var config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
-        config = config.applying(.init(paletteColors: [color]))
+        config = config.applying(.init(paletteColors: [nsColor(for: lowestLevel)]))
         if let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "Battery level") {
             button.image = image.withSymbolConfiguration(config)
         }
+        button.attributedTitle = attributedTitle(for: lowestLevel)
+    }
 
-        if lowestLevel < 100 {
-            button.attributedTitle = attributedTitle(for: lowestLevel)
-        } else {
-            button.title = ""
+    private func nsColor(for level: Int) -> NSColor {
+        switch DeviceBattery.batteryCategory(for: level) {
+        case .critical: return .systemRed
+        case .warning: return .systemYellow
+        default: return .labelColor
         }
     }
 
     private func attributedTitle(for level: Int) -> NSAttributedString {
-        let color: NSColor
-        if level < 15 {
-            color = .systemRed
-        } else if level < 30 {
-            color = .systemYellow
-        } else {
-            color = .labelColor
-        }
-
         let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: color,
+            .foregroundColor: nsColor(for: level),
             .font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium)
         ]
 
@@ -135,11 +131,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         } else {
             if let button = statusItem.button {
                 batteryService.setPopoverVisible(true)
-                if #available(macOS 14.0, *) {
-                    NSApp.activate()
-                } else {
-                    NSApp.activate(ignoringOtherApps: true)
-                }
+                launchAtLoginService.syncWithSystemStatus()
+                NSApp.activate()
                 popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             }
         }

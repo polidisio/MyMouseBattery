@@ -32,7 +32,7 @@ struct MenuBarView: View {
                     .padding(.horizontal, 12)
             } else {
                 ForEach(batteryService.devices) { device in
-                    DeviceBatteryView(device: device)
+                    DeviceBatteryView(device: device, history: batteryService.history[device.id] ?? [])
                         .padding(.horizontal, 12)
                         .padding(.vertical, 4)
 
@@ -43,23 +43,11 @@ struct MenuBarView: View {
                 }
             }
 
-            HStack {
-                Text("Battery Status")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-                Button(action: {
-                    batteryService.refresh()
-                }) {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.caption)
-                }
-                .buttonStyle(.borderless)
-                .keyboardShortcut("r", modifiers: .command)
-                .help("Refresh battery levels")
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 4)
+            Text("Battery Status")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
 
             Divider()
                 .padding(.vertical, 4)
