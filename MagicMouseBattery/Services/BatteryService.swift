@@ -61,8 +61,9 @@ class BatteryService: ObservableObject {
                let productName = getProductName(from: object) {
 
                 let deviceType = determineDeviceType(from: productName)
+                let deviceId = getRegistryEntryId(from: object) ?? UUID().uuidString
                 let device = DeviceBattery(
-                    id: UUID().uuidString,
+                    id: deviceId,
                     name: productName,
                     batteryLevel: batteryPercent,
                     deviceType: deviceType
@@ -121,6 +122,13 @@ class BatteryService: ObservableObject {
         }
 
         return .unknown
+    }
+
+    private func getRegistryEntryId(from object: io_object_t) -> String? {
+        var entryId: io_registry_entry_t = 0
+        let result = IOObjectGetRegistryEntryID(object, &entryId)
+        guard result == KERN_SUCCESS else { return nil }
+        return String(entryId)
     }
 }
 
