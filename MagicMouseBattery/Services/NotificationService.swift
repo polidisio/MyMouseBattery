@@ -28,18 +28,21 @@ class NotificationService: ObservableObject {
     }
 
     func checkBatteryLevels(for devices: [DeviceBattery]) {
-        self.devices = devices
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.devices = devices
 
-        for device in devices {
-            guard let level = device.batteryLevel else { continue }
+            for device in devices {
+                guard let level = device.batteryLevel else { continue }
 
-            if level <= notificationThreshold && !notifiedDevices.contains(device.id) {
-                sendNotification(for: device)
-                notifiedDevices.insert(device.id)
-            }
+                if level <= self.notificationThreshold && !self.notifiedDevices.contains(device.id) {
+                    self.sendNotification(for: device)
+                    self.notifiedDevices.insert(device.id)
+                }
 
-            if level > notificationThreshold {
-                notifiedDevices.remove(device.id)
+                if level > self.notificationThreshold {
+                    self.notifiedDevices.remove(device.id)
+                }
             }
         }
     }

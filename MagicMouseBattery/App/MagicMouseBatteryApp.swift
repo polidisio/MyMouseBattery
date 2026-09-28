@@ -22,8 +22,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     var eventMonitor: Any?
 
     private var batteryService: BatteryService { BatteryService.shared }
-    private var notificationService: NotificationService { NotificationService() }
-    private var launchAtLoginService: LaunchAtLoginService { LaunchAtLoginService() }
+    private let notificationService = NotificationService()
+    private let launchAtLoginService = LaunchAtLoginService()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()

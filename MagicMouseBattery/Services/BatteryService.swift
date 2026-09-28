@@ -10,6 +10,7 @@ class BatteryService: ObservableObject {
     @Published var lastUpdate: Date?
 
     private var timer: Timer?
+    private var refreshCancellable: AnyCancellable?
     var onDevicesUpdated: (() -> Void)?
 
     init() {
@@ -19,6 +20,7 @@ class BatteryService: ObservableObject {
 
     deinit {
         timer?.invalidate()
+        refreshCancellable?.cancel()
     }
 
     func startMonitoring(interval: TimeInterval = 60) {
@@ -29,6 +31,16 @@ class BatteryService: ObservableObject {
     }
 
     func refresh() {
+        refreshCancellable?.cancel()
+        refreshCancellable = Timer.publish(every: 0.1, on: .main, in: .userInitiated)
+            .autoconnect()
+            .prefix(1)
+            .sink { [weak self] _ in
+                self?.performRefresh()
+            }
+    }
+
+    private func performRefresh() {
         DispatchQueue.global(qos: .background).async { [weak self] in
             let detectedDevices = self?.detectDevices() ?? []
             DispatchQueue.main.async {
